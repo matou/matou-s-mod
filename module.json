@@ -1,10 +1,11 @@
 {
   "id": "matou-s-mod",
   "title": "Matou's Mod",
-  "description": "A starter module for Foundry VTT 14 with a hello-world notification.",
+  "description": "Personal adjustments for Foundry VTT 14. Configurable hotbar offset for each user.",
   "version": "0.1.0",
   "compatibility": {
     "minimum": "14",
+    "verified": "14.367",
     "maximum": "14"
   },
   "authors": [{ "name": "Matthias Matousek" }],
