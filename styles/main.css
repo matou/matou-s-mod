@@ -1,1 +1,4 @@
-/* Styles for Matou's Mod. Intentionally empty for now. */
+/* The current user's saved offset is applied by scripts/main.js. */
+#hotbar {
+  transform: translateX(var(--matou-s-mod-hotbar-offset, -150px));
+}

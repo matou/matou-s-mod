@@ -1,14 +1,26 @@
 # Matou's Mod
 
-A minimal Foundry VTT 14 module. Shows a hello-world notification and console
-message once per client when a world loads with the module enabled.
+A minimal Foundry VTT 14 module. Each user can configure their hotbar's
+horizontal offset, defaulting to 150 pixels left.
+
+## Configure the hotbar
+
+Open **Game Settings → Configure Settings → Matou's Mod** and change
+**Hotbar horizontal offset**, then save. Negative values move left, positive
+values move right, and `0` restores the default position. Changes apply on save
+without reloading. The setting belongs to your Foundry user in this world and
+follows that user across browsers and devices.
+
+To check it, save `-250`, then `0`, and confirm the hotbar moves immediately.
+Reload to confirm the value persists. Log in as a different user and confirm
+they retain their own offset (initially `-150`).
 
 ## Repository layout
 
 ```text
 module.json       Package identity, compatibility, files to load, and release URLs
-scripts/main.js   Browser JavaScript entry point (hello-world ready hook)
-styles/main.css   Stylesheet (currently comments only)
+scripts/main.js   Registers the user setting and applies it through a CSS variable
+styles/main.css   Hotbar position adjustment
 LICENSE           BSD 3-Clause license
 README.md         Development and release instructions
 ```
@@ -31,9 +43,8 @@ to the exact Foundry build tested, for example `14.365` if that is your build.
 2. With Foundry stopped, create `Data/modules/matou-s-mod/` and copy
    `module.json`, `scripts/`, `styles/`, `LICENSE`, and `README.md` into it.
 3. Start Foundry, open a test world, and enable **Matou's Mod** in **Manage Modules**.
-4. Save and reload. A notification should say **Hello world from Matou's Mod!**
-   The browser developer console should also show
-   `matou-s-mod | Hello world from Matou's Mod!` without errors.
+4. Save and reload. The hotbar should appear 150 pixels farther left.
+   Check the browser developer console for errors.
    The Network panel should show `scripts/main.js` and
    `styles/main.css` loading from `modules/matou-s-mod/`.
 
