@@ -30,6 +30,11 @@ no current or maximum HP, no rollable formula, or an invalid formula are left
 unchanged. The module does not check the active game system; compatible systems
 can use the same data shape.
 
+GMs can turn the feature on or off under **Game Settings → Configure Settings →
+Matou's Mod → Show combat tracker HP**. It is a world setting, defaults to on,
+and is hidden from non-GM users. Changing it refreshes both the docked and
+popped-out combat trackers immediately.
+
 ## Configure the hotbar
 
 Open **Game Settings → Configure Settings → Matou's Mod** and change

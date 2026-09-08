@@ -2,6 +2,7 @@ import { changesCombatHp, getCombatHpDisplay } from "./combat-hp.mjs";
 
 const MODULE_ID = "matou-s-mod";
 const COMBATANT_SELECTOR = ".combatant[data-combatant-id]";
+const COMBAT_HP_SETTING = "showCombatTrackerHp";
 
 function getCombatTrackerRoot(app, element) {
   if (element instanceof HTMLElement) return element;
@@ -10,11 +11,18 @@ function getCombatTrackerRoot(app, element) {
 }
 
 async function addCombatHpToTracker(app, element) {
-  if (!game.user.isGM) return;
-
   const root = getCombatTrackerRoot(app, element);
+  if (!root || !game.user.isGM) return;
+
+  if (!game.settings.get(MODULE_ID, COMBAT_HP_SETTING)) {
+    root.querySelectorAll(".matou-s-mod-combat-hp").forEach((hp) => hp.remove());
+    root.querySelectorAll(".matou-s-mod-defeat-threshold")
+      .forEach((row) => row.classList.remove("matou-s-mod-defeat-threshold"));
+    return;
+  }
+
   const combat = app.viewed ?? game.combat;
-  if (!root || !combat) return;
+  if (!combat) return;
 
   const rows = root.querySelectorAll(COMBATANT_SELECTOR);
   await Promise.all(Array.from(rows, async (row) => {
@@ -39,11 +47,21 @@ async function addCombatHpToTracker(app, element) {
   }));
 }
 
-function refreshCombatTrackerHp(actor, changes) {
-  if (!game.user.isGM || !changesCombatHp(changes)) return;
+function renderCombatTrackers() {
+  for (const tracker of getCombatTrackers()) {
+    if (tracker.rendered) tracker.render();
+  }
+}
 
-  const trackers = [ui.combat, ui.combat?.popout].filter(Boolean);
-  for (const tracker of trackers) {
+function getCombatTrackers() {
+  return [ui.combat, ui.combat?.popout].filter(Boolean);
+}
+
+function refreshCombatTrackerHp(actor, changes) {
+  if (!game.user.isGM || !game.settings.get(MODULE_ID, COMBAT_HP_SETTING)
+      || !changesCombatHp(changes)) return;
+
+  for (const tracker of getCombatTrackers()) {
     const combat = tracker.viewed ?? game.combat;
     const includesActor = combat?.combatants.some((combatant) => combatant.actor?.id === actor.id);
     if (includesActor && tracker.rendered) tracker.render();
@@ -65,6 +83,16 @@ Hooks.once("init", () => {
     type: Number,
     default: -150,
     onChange: applyHotbarOffset
+  });
+
+  game.settings.register(MODULE_ID, COMBAT_HP_SETTING, {
+    name: "Show combat tracker HP",
+    hint: "Show current HP, maximum HP, the earliest-defeat threshold, and its amber highlight in the combat tracker.",
+    scope: "world",
+    config: true,
+    type: Boolean,
+    default: true,
+    onChange: renderCombatTrackers
   });
 });
 
