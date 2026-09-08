@@ -2,7 +2,7 @@
   "id": "matou-s-mod",
   "title": "Matou's Mod",
   "description": "Personal adjustments for Foundry VTT 14. Configurable hotbar offset and GM combat-tracker HP thresholds.",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "compatibility": {
     "minimum": "14",
     "verified": "14.367",
@@ -13,7 +13,7 @@
   "styles": ["styles/main.css"],
   "url": "https://github.com/matou/matou-s-mod",
   "manifest": "https://github.com/matou/matou-s-mod/releases/latest/download/module.json",
-  "download": "https://github.com/matou/matou-s-mod/releases/download/v0.2.0/module.zip",
+  "download": "https://github.com/matou/matou-s-mod/releases/download/v0.2.1/module.zip",
   "license": "LICENSE",
   "readme": "README.md"
 }

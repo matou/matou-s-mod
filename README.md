@@ -65,7 +65,7 @@ files Foundry serves to connected browsers. Run the automated tests with
 translations, and `packs/` for compendiums as needed.
 
 The module ID is `matou-s-mod`; its installed folder must have that exact name.
-The module version (`0.2.0`) is independent of the Foundry version (`14`).
+The module version (`0.2.1`) is independent of the Foundry version (`14`).
 Compatibility currently permits only Foundry 14. The module has been verified
 locally on Foundry **14.367**, recorded in `compatibility.verified`.
 
@@ -104,8 +104,8 @@ The manifest has two different release addresses:
 
 - `manifest`: a stable address for the latest released `module.json`. Foundry
   checks this to discover updates.
-- `download`: the ZIP for this specific module version. For `0.2.0`, this points
-  to the `module.zip` asset attached to GitHub release tag `v0.2.0`.
+- `download`: the ZIP for this specific module version. For `0.2.1`, this points
+  to the `module.zip` asset attached to GitHub release tag `v0.2.1`.
 
 These addresses are configured for this repository, but will only work after
 the first public release and its assets exist. Pushing source code alone does
@@ -116,7 +116,7 @@ not publish an installable release. No release automation is configured yet.
 1. Test the module locally in Foundry 14. Set `compatibility.verified` to the
    Foundry build you tested.
 2. For each subsequent release, increase `version` in `module.json` and update
-   its `download` URL to the matching tag (for example `v0.2.1`). Keep the
+   its `download` URL to the matching tag (for example `v0.2.2`). Keep the
    `manifest` URL stable.
 3. Commit and push the intended files to GitHub. Package that same revision
    from the repository root using the following macOS/Linux commands:
@@ -132,7 +132,7 @@ not publish an installable release. No release automation is configured yet.
    The ZIP must contain `module.json` at its root. `dist/` is ignored by Git;
    the archive includes only the explicitly listed files. If we add runtime
    folders later, include them in the packaging command too.
-4. On GitHub, create a release with tag `v0.2.0` (or your new version) targeting
+4. On GitHub, create a release with tag `v0.2.1` (or your new version) targeting
    the committed revision. Attach **both** `dist/module.json` and
    `dist/module.zip`. Publish it as a regular release, not a prerelease, so the
    `releases/latest` address resolves to it. Assets must be publicly accessible.
