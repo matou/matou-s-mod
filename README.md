@@ -1,7 +1,34 @@
 # Matou's Mod
 
 A minimal Foundry VTT 14 module. Each user can configure their hotbar's
-horizontal offset, defaulting to 150 pixels left.
+horizontal offset, defaulting to 150 pixels left. GMs also see current HP and
+an earliest-defeat threshold in the combat tracker for actors that provide a
+rollable HP formula.
+
+## Combat tracker HP
+
+For a combatant whose actor exposes `system.attributes.hp.value`,
+`system.attributes.hp.max`, and `system.attributes.hp.formula`, the GM sees this
+beneath the combatant's name:
+
+```text
+<current HP>/<maximum HP> (<earliest-defeat threshold>)
+```
+
+The threshold is the maximum possible formula result minus the minimum possible
+result. For `2d6 + 6`, those results are 18 and 8, so the threshold is 10. A
+creature currently at its maximum therefore appears as `18/18 (10)`. This
+lets the GM treat 10 remaining HP as the earliest point at which the creature
+may be defeated, after it has taken the minimum possible 8 damage.
+
+When current HP reaches or falls below the threshold, the combatant's tracker
+row receives a dark amber background as a visual prompt that it can be called
+defeated.
+
+The display is GM-only so creature HP is not disclosed to players. Actors with
+no current or maximum HP, no rollable formula, or an invalid formula are left
+unchanged. The module does not check the active game system; compatible systems
+can use the same data shape.
 
 ## Configure the hotbar
 
@@ -19,15 +46,18 @@ they retain their own offset (initially `-150`).
 
 ```text
 module.json       Package identity, compatibility, files to load, and release URLs
-scripts/main.js   Registers the user setting and applies it through a CSS variable
-styles/main.css   Hotbar position adjustment
+scripts/main.js       Registers hooks and the user setting
+scripts/combat-hp.mjs Calculates combat HP display values
+styles/main.css       Hotbar positioning and combat HP presentation
+tests/                Dependency-free Node.js tests for combat HP calculation
 LICENSE           BSD 3-Clause license
 README.md         Development and release instructions
 ```
 
 There is no build step or dependency installation. The files you edit are the
-files Foundry serves to connected browsers. Later, we can add `templates/` for
-UI templates, `lang/` for translations, and `packs/` for compendiums as needed.
+files Foundry serves to connected browsers. Run the automated tests with
+`node --test`. Later, we can add `templates/` for UI templates, `lang/` for
+translations, and `packs/` for compendiums as needed.
 
 The module ID is `matou-s-mod`; its installed folder must have that exact name.
 The module version (`0.1.0`) is independent of the Foundry version (`14`).

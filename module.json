@@ -1,7 +1,7 @@
 {
   "id": "matou-s-mod",
   "title": "Matou's Mod",
-  "description": "Personal adjustments for Foundry VTT 14. Configurable hotbar offset for each user.",
+  "description": "Personal adjustments for Foundry VTT 14. Configurable hotbar offset and GM combat-tracker HP thresholds.",
   "version": "0.1.0",
   "compatibility": {
     "minimum": "14",
