@@ -12,10 +12,10 @@
   line-height: 1;
 }
 
-.combatant.matou-s-mod-defeat-threshold {
+.combatant.matou-s-mod-defeat-threshold:not(.hover):not(:hover) {
   background-color: #1e0020;
 }
 
-.combatant.matou-s-mod-average-threshold {
+.combatant.matou-s-mod-average-threshold:not(.hover):not(:hover) {
   background-color: #291200;
 }
