@@ -9,7 +9,9 @@ const HP_PATH = "system.attributes.hp";
  *   current: number,
  *   maximum: number,
  *   threshold: number,
+ *   averageThreshold: number,
  *   isAtOrBelowThreshold: boolean,
+ *   isAtOrBelowAverageThreshold: boolean,
  *   text: string
  * } | null>}
  */
@@ -30,14 +32,20 @@ export async function getCombatHpDisplay(actor, RollClass = globalThis.Roll) {
       minimumRoll.evaluate({ minimize: true }),
       maximumRoll.evaluate({ maximize: true })
     ]);
-    const threshold = Number(maximumRollResult.total) - Number(minimumRollResult.total);
+    const maximumRollTotal = Number(maximumRollResult.total);
+    const threshold = maximumRollTotal - Number(minimumRollResult.total);
+    // Statblocks round fractional average HP down, so the distance from the
+    // formula maximum to that average rounds up.
+    const averageThreshold = Math.ceil(threshold / 2);
 
-    if (!Number.isFinite(threshold)) return null;
+    if (!Number.isFinite(threshold) || !Number.isFinite(averageThreshold)) return null;
     return {
       current,
       maximum: maximumHp,
       threshold,
+      averageThreshold,
       isAtOrBelowThreshold: current <= threshold,
+      isAtOrBelowAverageThreshold: current <= averageThreshold,
       text: `${current}/${maximumHp} (${threshold})`
     };
   } catch (_error) {

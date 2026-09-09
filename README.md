@@ -22,8 +22,12 @@ lets the GM treat 10 remaining HP as the earliest point at which the creature
 may be defeated, after it has taken the minimum possible 8 damage.
 
 When current HP reaches or falls below the threshold, the combatant's tracker
-row receives a dark amber background as a visual prompt that it can be called
-defeated.
+row receives a subtle dark-purple background (`#1e0020`). The background
+changes to dark amber (`#291200`) once current HP reaches or falls below the maximum
+possible formula result minus the formula's statblock average. For example,
+`2d6 + 6` has a maximum of 18 and an average of 13, so the amber phase begins
+at 5 HP. Fractional formula averages are rounded down, matching normal
+statblock presentation.
 
 The display is GM-only so creature HP is not disclosed to players. Actors with
 no current or maximum HP, no rollable formula, or an invalid formula are left

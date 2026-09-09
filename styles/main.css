@@ -13,5 +13,9 @@
 }
 
 .combatant.matou-s-mod-defeat-threshold {
-  background-color: #432600;
+  background-color: #1e0020;
+}
+
+.combatant.matou-s-mod-average-threshold {
+  background-color: #291200;
 }

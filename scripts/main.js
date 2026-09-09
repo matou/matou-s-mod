@@ -18,6 +18,8 @@ async function addCombatHpToTracker(app, element) {
     root.querySelectorAll(".matou-s-mod-combat-hp").forEach((hp) => hp.remove());
     root.querySelectorAll(".matou-s-mod-defeat-threshold")
       .forEach((row) => row.classList.remove("matou-s-mod-defeat-threshold"));
+    root.querySelectorAll(".matou-s-mod-average-threshold")
+      .forEach((row) => row.classList.remove("matou-s-mod-average-threshold"));
     return;
   }
 
@@ -29,7 +31,12 @@ async function addCombatHpToTracker(app, element) {
     const combatant = combat.combatants.get(row.dataset.combatantId);
     const display = await getCombatHpDisplay(combatant?.actor);
     const existing = row.querySelector(".matou-s-mod-combat-hp");
-    row.classList.toggle("matou-s-mod-defeat-threshold", display?.isAtOrBelowThreshold ?? false);
+    const isAtOrBelowAverageThreshold = display?.isAtOrBelowAverageThreshold ?? false;
+    row.classList.toggle(
+      "matou-s-mod-defeat-threshold",
+      (display?.isAtOrBelowThreshold ?? false) && !isAtOrBelowAverageThreshold
+    );
+    row.classList.toggle("matou-s-mod-average-threshold", isAtOrBelowAverageThreshold);
 
     if (!display) {
       existing?.remove();
@@ -87,7 +94,7 @@ Hooks.once("init", () => {
 
   game.settings.register(MODULE_ID, COMBAT_HP_SETTING, {
     name: "Show combat tracker HP",
-    hint: "Show current HP, maximum HP, the earliest-defeat threshold, and its amber highlight in the combat tracker.",
+    hint: "Show current HP, maximum HP, the earliest-defeat threshold, and its two-stage highlight in the combat tracker.",
     scope: "world",
     config: true,
     type: Boolean,

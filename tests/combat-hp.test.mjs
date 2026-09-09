@@ -16,18 +16,20 @@ class TestRoll {
   }
 }
 
-test("formats current HP with the difference between maximum and minimum rolls", async () => {
+test("derives both HP thresholds from the formula", async () => {
   const actor = {
-    system: { attributes: { hp: { value: 18, max: 18, formula: "2d6 + @bonus" } } },
+    system: { attributes: { hp: { value: 4, max: 18, formula: "2d6 + @bonus" } } },
     getRollData: () => ({ bonus: 6 })
   };
 
   assert.deepEqual(await getCombatHpDisplay(actor, TestRoll), {
-    current: 18,
+    current: 4,
     maximum: 18,
     threshold: 10,
-    isAtOrBelowThreshold: false,
-    text: "18/18 (10)"
+    averageThreshold: 5,
+    isAtOrBelowThreshold: true,
+    isAtOrBelowAverageThreshold: true,
+    text: "4/18 (10)"
   });
 });
 
@@ -43,6 +45,62 @@ test("marks HP at or below the defeat threshold", async () => {
   actor.system.attributes.hp.value = 9;
   const belowThreshold = await getCombatHpDisplay(actor, TestRoll);
   assert.equal(belowThreshold.isAtOrBelowThreshold, true);
+});
+
+test("marks HP at or below maximum roll minus the formula's average HP", async () => {
+  const actor = {
+    system: { attributes: { hp: { value: 5, max: 18, formula: "2d6 + @bonus" } } },
+    getRollData: () => ({ bonus: 6 })
+  };
+
+  const atAverageThreshold = await getCombatHpDisplay(actor, TestRoll);
+  assert.equal(atAverageThreshold.averageThreshold, 5);
+  assert.equal(atAverageThreshold.isAtOrBelowThreshold, true);
+  assert.equal(atAverageThreshold.isAtOrBelowAverageThreshold, true);
+
+  actor.system.attributes.hp.value = 4;
+  const belowAverageThreshold = await getCombatHpDisplay(actor, TestRoll);
+  assert.equal(belowAverageThreshold.isAtOrBelowThreshold, true);
+  assert.equal(belowAverageThreshold.isAtOrBelowAverageThreshold, true);
+});
+
+test("rounds fractional formula averages down like a statblock", async () => {
+  class OddRangeRoll {
+    async evaluate(options) {
+      this.total = options.minimize ? 10 : 45;
+      return this;
+    }
+  }
+
+  const actor = {
+    system: { attributes: { hp: { value: 17, max: 45, formula: "5d8 + 5" } } }
+  };
+
+  const display = await getCombatHpDisplay(actor, OddRangeRoll);
+  assert.equal(display.averageThreshold, 18);
+  assert.equal(display.isAtOrBelowAverageThreshold, true);
+});
+
+test("keeps the threshold phase until average damage has been taken", async () => {
+  class DruidHpRoll {
+    async evaluate(options) {
+      this.total = options.minimize ? 16 : 72;
+      return this;
+    }
+  }
+
+  const actor = {
+    system: { attributes: { hp: { value: 29, max: 72, formula: "8d8 + 8" } } }
+  };
+
+  const aboveAverageDamage = await getCombatHpDisplay(actor, DruidHpRoll);
+  assert.equal(aboveAverageDamage.averageThreshold, 28);
+  assert.equal(aboveAverageDamage.isAtOrBelowThreshold, true);
+  assert.equal(aboveAverageDamage.isAtOrBelowAverageThreshold, false);
+
+  actor.system.attributes.hp.value = 28;
+  const atAverageDamage = await getCombatHpDisplay(actor, DruidHpRoll);
+  assert.equal(atAverageDamage.isAtOrBelowAverageThreshold, true);
 });
 
 test("returns no display when HP or its formula is unavailable", async () => {

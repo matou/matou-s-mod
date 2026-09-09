@@ -63,12 +63,16 @@ test("removes tracker additions and skips actor refreshes while disabled", () =>
   const row = { classList };
   const root = new TestElement({
     ".matou-s-mod-combat-hp": [hp],
-    ".matou-s-mod-defeat-threshold": [row]
+    ".matou-s-mod-defeat-threshold": [row],
+    ".matou-s-mod-average-threshold": [row]
   });
 
   hooks.get("renderCombatTracker")({}, root);
   assert.equal(hp.removed, true);
-  assert.deepEqual(classList.removed, ["matou-s-mod-defeat-threshold"]);
+  assert.deepEqual(classList.removed, [
+    "matou-s-mod-defeat-threshold",
+    "matou-s-mod-average-threshold"
+  ]);
 
   dockedTracker.renderCount = 0;
   popoutTracker.renderCount = 0;
